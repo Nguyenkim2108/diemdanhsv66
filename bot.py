@@ -15,7 +15,13 @@ AUTO_SEND_CHAT_IDS = set()
 
 # === KẾT NỐI GOOGLE SHEETS ===
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+import os
+from io import StringIO
+
+creds_json = os.getenv('CREDENTIALS_JSON')
+if not creds_json:
+    raise ValueError("Thiếu biến môi trường CREDENTIALS_JSON! Vui lòng thêm trong Railway.")
+creds = ServiceAccountCredentials.from_json_keyfile_name(StringIO(creds_json), scope)
 client = gspread.authorize(creds)
 sheet = client.open(SHEET_NAME).sheet1
 
